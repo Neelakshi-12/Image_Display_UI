@@ -5,11 +5,14 @@ import {
   View,
   FlatList,
   Image,
+  Button,
+  ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
 import data from '../data';
 import AntIcon from 'react-native-vector-icons/AntDesign';
-export default class ImageDisplay extends React.Component {
+
+export default class EBooks extends React.Component {
   constructor(props) {
     super(props);
 
@@ -17,8 +20,9 @@ export default class ImageDisplay extends React.Component {
       isLoading: true,
       dataSource: [],
       page: 1,
-      perPage: 6,
+      perPage: 5,
       loadMoreVisible: true,
+
       text: '',
       allData: data.info,
     };
@@ -26,12 +30,10 @@ export default class ImageDisplay extends React.Component {
   }
   componentDidMount() {
     this.setNewData();
-    // console.log('alldata', this.state.allData);
-    // {
-    //   this.state.allData.map((item, index) => {
-    //     return console.log(item.images.length);
-    //   });
-    // }
+    console.log(
+      'alllllllllllllllllllllllll daaaaaaaaaaaatttttttttttttttaaaaaaaaaaaaaa',
+      this.state.allData,
+    );
   }
 
   setNewData = async () => {
@@ -50,18 +52,20 @@ export default class ImageDisplay extends React.Component {
       });
       this.arrayholder = data.info;
     }
+    console.log('this.arrayHolder', this.arrayholder);
   };
 
-  loadMore() {
+  loadMore = () => {
     this.setState(
       {
         page: this.state.page + 1,
+        loadMoreVisible: true,
       },
       () => {
         this.setNewData();
       },
     );
-  }
+  };
 
   render() {
     return (
@@ -75,25 +79,28 @@ export default class ImageDisplay extends React.Component {
                 <TouchableOpacity
                   onPress={() => {
                     this.props.navigation.navigate('SingleImageDisplay', {
+                      itemId: item.id,
                       itemTitle: item.title,
                       itemPhoto: item.photo,
                     });
-                  }}
-                  style={{flex: 1}}>
+                  }}>
                   <Image
                     source={{uri: item.photo}}
                     style={{
                       resizeMode: 'cover',
                       flex: 1,
-                      aspectRatio: 1,
+                      height: 155,
+                      width: 155,
                       borderRadius: 10,
                     }}
                   />
                   <View>
-                    <Text style={styles.title}>{item.title}</Text>
-                    {/* {console.log('item.images', item.images)}
-                    {console.log(item.images.length)} */}
-                    <Text style={styles.title}>{item.images.length}</Text>
+                    <Text style={{color: '#727375'}}>{item.title}</Text>
+                    <View>
+                      <Text style={{color: '#3c4869'}}>
+                        ({item.images.length})
+                      </Text>
+                    </View>
                   </View>
                 </TouchableOpacity>
               </View>
@@ -116,7 +123,7 @@ export default class ImageDisplay extends React.Component {
                     <View style={{flexDirection: 'row'}}>
                       <Text
                         style={{
-                          color: 'green',
+                          color: 'black',
                           fontWeight: 'bold',
                           fontSize: 18,
                           marginRight: 4,
@@ -124,13 +131,15 @@ export default class ImageDisplay extends React.Component {
                         {' '}
                         Load More
                       </Text>
-                      <AntIcon name="loading1" color="green" size={20} />
+                      <ActivityIndicator size="large" color="grey" />
                     </View>
                   </TouchableOpacity>
                 </View>
               ) : null}
             </View>
           )}
+          onEndReachedThreshold={0.01}
+          onEndReached={this.loadMore}
         />
       </View>
     );
@@ -147,29 +156,9 @@ const styles = StyleSheet.create({
     margin: 10,
     padding: 10,
     backgroundColor: '#FFF',
-    width: '80%',
-    flex: 1,
+    flex: 0.5,
     alignSelf: 'center',
     flexDirection: 'row',
     borderRadius: 5,
-  },
-  textInput: {
-    textAlign: 'center',
-    height: 42,
-    borderWidth: 1,
-    borderColor: 'grey',
-    borderRadius: 8,
-    backgroundColor: '#FFFF',
-  },
-  title: {
-    fontSize: 18,
-    flex: 1,
-    color: 'grey',
-  },
-  count: {
-    fontSize: 18,
-    flex: 1,
-    color: '#B0C4DE',
-    fontWeight: 'bold',
   },
 });
